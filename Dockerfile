@@ -1,14 +1,13 @@
-FROM eclipse-temurin:25-jdk AS build
+FROM maven:3.9-eclipse-temurin-25 AS build
 
 WORKDIR /app
 COPY . .
 
-RUN chmod +x mvnw \
-    && mkdir -p calculadora/db \
-    && ./mvnw flyway:migrate \
+RUN mkdir -p calculadora/db \
+    && mvn flyway:migrate \
        -Dflyway.configFiles=./flyway/flyway-pro.conf \
        --batch-mode --errors \
-    && ./mvnw clean package -DskipTests --batch-mode
+    && mvn clean package -DskipTests --batch-mode
 
 FROM eclipse-temurin:25-jre
 
